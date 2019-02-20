@@ -1,0 +1,14 @@
+{
+  "name": "mcd-redeploy-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Andy Chorlian",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^24.1.0"
+  }
+}
