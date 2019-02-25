@@ -1,0 +1,3 @@
+To get started you will need to set your process.env variables for process.env.PRIVATE_KEY and process.env.JSON_RPC
+
+Then run with yarn test
