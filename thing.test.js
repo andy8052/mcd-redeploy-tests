@@ -28,7 +28,6 @@ beforeAll(async (done) => {
     });
     done()
 });
-  
 
 test('can open CDP', async () => {
     await maker.authenticate();
@@ -43,6 +42,28 @@ test('can lock eth', async () => {
     await txMgr.confirm(lock);
     const collateral = await cdp.getCollateralValue();
     expect(collateral.toNumber()).toBeGreaterThan(initialCollateral.toNumber());
-  },
-  600000
-);
+}, 600000);
+
+test('can withdraw Dai', async () => {
+    const initialDebt = await cdp.getDebtValue();
+    const draw = cdp.drawDai(0.1);
+    await txMgr.confirm(draw);
+    const currentDebt = await cdp.getDebtValue();
+    expect(currentDebt.toNumber()).toBeGreaterThan(initialDebt.toNumber());
+}, 300000);
+
+test('can wipe debt', async () => {
+    const initialDebt = await cdp.getDebtValue();
+    const wipe = cdp.wipeDai('0.1');
+    await txMgr.confirm(wipe);
+    const currentDebt = await cdp.getDebtValue();
+    expect(initialDebt.toNumber()).toBeGreaterThan(currentDebt.toNumber());
+}, 600000);
+
+test('can shut a CDP', async () => {
+    await cdp.shut();
+    await convertPeth();
+    await convertWeth();
+    const info = await cdp.getInfo();
+    expect(info.lad).toBe('0x0000000000000000000000000000000000000000');
+}, 1200000);
