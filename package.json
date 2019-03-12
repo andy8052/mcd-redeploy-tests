@@ -12,6 +12,7 @@
     "jest": "^24.1.0"
   },
   "dependencies": {
-    "@makerdao/dai": "^0.11.2"
+    "@makerdao/dai": "^0.11.2",
+    "@makerdao/dai-plugin-mcd": "0.0.3"
   }
 }
