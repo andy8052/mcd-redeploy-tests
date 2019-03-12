@@ -19,9 +19,6 @@ beforeAll(async (done) => {
               {
                 cdpTypes: [
                   { currency: McdPlugin.ETH }      
-                  // TODO not ready for this one yet -- need the ability to
-                  // deploy contracts from within JS
-                  // { currency: REP, name: 'REP-ALT' }
                 ]
               }
             ]
@@ -29,21 +26,17 @@ beforeAll(async (done) => {
     });
   
     await maker.authenticate();
-    console.info(`1`);
 
+    // Getting an error here so trying to just ignore for now
     // await maker.service('proxy').ensureProxy();
 
-    console.info(`2`);
-
-    maker.service('accounts').listAccounts()
+    // maker.service('accounts').listAccounts()
 
     cdpManager = await maker.service('mcd:cdpManager');
 
-    console.info(`3`);
 
-    cdp = await cdpManager.openLockAndDraw('FOO', ETH(50), MDAI(1000));
+    // cdp = await cdpManager.openLockAndDraw('FOO', ETH(50), MDAI(1000));
 
-    console.info(`4`);
 
     tokenService = maker.service('token');
     address = maker.service('web3').currentAddress();
@@ -64,7 +57,7 @@ beforeAll(async (done) => {
 
 test('can open CDP', async () => {
     await maker.authenticate();
-    // cdp = await cdpManager.openLockAndDraw('FOO', McdPlugin.ETH(50), McdPlugin.MDAI(1000));
-    // console.info('Opened new CDP', cdp.id);
-    // expect(cdp).toBeDefined();
+    cdp = await cdpManager.openLockAndDraw('FOO', McdPlugin.ETH(50), McdPlugin.MDAI(1000));
+    console.info('Opened new CDP', cdp.id);
+    expect(cdp).toBeDefined();
 }, 100000);
