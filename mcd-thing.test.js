@@ -1,21 +1,19 @@
 const McdPlugin = require('@makerdao/dai-plugin-mcd');
 const Maker = require('@makerdao/dai');
 
-let maker, cdp, txMgr, cdpManager;
+let maker, cdp, txMgr, cdpManager, proxy, dai, eth, rep;
 
 beforeAll(async (done) => {
     if (!process.env.PRIVATE_KEY && process.env.NETWORK !== 'test') {
       throw new Error('Please set a private key to run integration tests.');
     }
   
-    console.info(McdPlugin.ETH)
-
     maker = await Maker.create("http", {
         privateKey: process.env.PRIVATE_KEY,
         url: process.env.JSON_RPC,
         plugins: [
             [
-              McdPlugin,
+              McdPlugin.default,
               {
                 cdpTypes: [
                   { currency: McdPlugin.ETH }      
@@ -26,20 +24,23 @@ beforeAll(async (done) => {
     });
   
     await maker.authenticate();
+    await maker.service('proxy').ensureProxy();
+    proxy = await maker.currentProxy();
 
-    // Getting an error here so trying to just ignore for now
-    // await maker.service('proxy').ensureProxy();
+    let { currency } = await maker.service('mcd:cdpType').getCdpType(null, 'ETH');
+    await maker.getToken(currency).approveUnlimited(proxy);
 
-    // maker.service('accounts').listAccounts()
+
+    dai = maker.getToken(McdPlugin.MDAI);
+    await dai.approveUnlimited(proxy);
+
+    // console.info(dai)
+    // currency = await maker.service('mcd:cdpType').getCdpType(null, 'DAI');
 
     cdpManager = await maker.service('mcd:cdpManager');
 
-
-    // cdp = await cdpManager.openLockAndDraw('FOO', ETH(50), MDAI(1000));
-
-
     tokenService = maker.service('token');
-    address = maker.service('web3').currentAddress();
+    // address = maker.service('web3').currentAddress();
     txMgr = maker.service('transactionManager');
     txMgr.onNewTransaction(txo => {
       const {
@@ -56,8 +57,9 @@ beforeAll(async (done) => {
 });
 
 test('can open CDP', async () => {
-    await maker.authenticate();
-    cdp = await cdpManager.openLockAndDraw('FOO', McdPlugin.ETH(50), McdPlugin.MDAI(1000));
+    // await maker.authenticate();
+    // cdp = await cdpManager.open('ETH');
+    cdp = await cdpManager.openLockAndDraw('ETH', McdPlugin.ETH(1), McdPlugin.MDAI(1));
     console.info('Opened new CDP', cdp.id);
     expect(cdp).toBeDefined();
 }, 100000);
