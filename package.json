@@ -4,16 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node --experimental-modules thing.mjs",
     "test": "jest --no-cache",
-    "update": "node new-testchain.js"
+    "update": "node utils/new-testchain.js"
   },
   "author": "Andy Chorlian",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^24.5.0",
+    "jest": "^24.5.0"
   },
   "dependencies": {
-    "@makerdao/dai": "^0.12.0",
-    "@makerdao/dai-plugin-mcd": "0.0.5",
+    "@makerdao/dai": "0.13.1",
+    "@makerdao/dai-plugin-mcd": "0.0.7"
   }
 }
